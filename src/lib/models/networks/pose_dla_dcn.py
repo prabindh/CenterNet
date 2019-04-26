@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 def get_model_url(data='imagenet', name='dla34', hash='ba72cf86'):
     return join('http://dl.yf.io/dla/models', data, '{}-{}.pth'.format(name, hash))
 
+def get_model_local_dir(data='imagenet', name='dla34', hash='ba72cf86'):
+    return '../models'
+
 
 def conv3x3(in_planes, out_planes, stride=1):
     "3x3 convolution with padding"
@@ -297,7 +300,7 @@ class DLA(nn.Module):
             model_weights = torch.load(data + name)
         else:
             model_url = get_model_url(data, name, hash)
-            model_weights = model_zoo.load_url(model_url)
+            model_weights = model_zoo.load_url(model_url, model_dir=get_model_local_dir(data, name, hash))
         num_classes = len(model_weights[list(model_weights.keys())[-1]])
         self.fc = nn.Conv2d(
             self.channels[-1], num_classes,
